@@ -69,9 +69,9 @@ EXPOSE $JUPYTER_PORT
 
 ENTRYPOINT [ "tini", "-g", "--" ]
 
-CMD [ "start-notebook-frozen.sh" ]
+CMD [ "start-notebook.sh" ]
 
-COPY start.sh start-notebook-frozen.sh /usr/local/bin/
+COPY start.sh start-notebook.sh /usr/local/bin/
 COPY jupyter_server_config.py /etc/jupyter/
 
 # Legacy for Jupyter Notebook Server, see: [#1205](https://github.com/jupyter/docker-stacks/issues/1205)
