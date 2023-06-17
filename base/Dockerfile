@@ -25,6 +25,8 @@ ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
 ENV LD_LIBRARY_PATH /usr/local/nvidia/lib:/usr/local/nvidia/lib64
 
+ENV PATH /home/${NB_USER}/.local/bin:$PATH
+
 # Rename vscode user to ${NB_USER} (jovyan)
 RUN usermod -l ${NB_USER} vscode \
     && usermod -d /home/${NB_USER} -m ${NB_USER} \
@@ -55,6 +57,8 @@ RUN echo "auth requisite pam_deny.so" >> /etc/pam.d/su && \
     chmod g+w /etc/passwd && \
     fix-permissions.sh "${HOME}"
 
+USER ${NB_UID}
+
 # Install jupyter
 RUN python3 -m pip install --upgrade pip && \
     python3 -m pip install \
@@ -73,6 +77,8 @@ EXPOSE $JUPYTER_PORT
 ENTRYPOINT [ "tini", "-g", "--" ]
 
 CMD [ "start-notebook.sh" ]
+
+USER root
 
 COPY start.sh start-notebook.sh /usr/local/bin/
 COPY jupyter_server_config.py /etc/jupyter/
