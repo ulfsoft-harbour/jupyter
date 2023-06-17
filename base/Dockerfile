@@ -38,6 +38,8 @@ RUN apt-get update --yes && \
     locales \
     sudo \
     tini \
+    nodejs \
+    npm \
     wget && \
     apt-get clean && rm -rf /var/lib/apt/lists/* && \
     echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
@@ -60,6 +62,7 @@ RUN python3 -m pip install --upgrade pip && \
     jupyterhub \
     jupyterlab && \
     jupyter notebook --generate-config && \
+    npm cache clean --force && \
     jupyter lab clean && \
     rm -rf "/home/${NB_USER}/.cache/yarn" && \
     fix-permissions.sh "/home/${NB_USER}"
@@ -73,6 +76,7 @@ CMD [ "start-notebook.sh" ]
 
 COPY start.sh start-notebook.sh /usr/local/bin/
 COPY jupyter_server_config.py /etc/jupyter/
+RUN chmod a+rx /usr/local/bin/start.sh /usr/local/bin/start-notebook.sh
 
 # Legacy for Jupyter Notebook Server, see: [#1205](https://github.com/jupyter/docker-stacks/issues/1205)
 RUN sed -re "s/c.ServerApp/c.NotebookApp/g" \
